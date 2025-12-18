@@ -119,6 +119,7 @@ jobs:
         done
 
     - name: Find and prepare build artifacts
+      shell: bash
       run: |
         echo "Searching for build artifacts in all possible locations..."
         echo "=== Target directory structure ==="
