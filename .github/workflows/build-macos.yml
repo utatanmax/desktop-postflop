@@ -65,17 +65,28 @@ jobs:
 
     - name: Find and prepare build artifacts
       run: |
-        echo "Searching for build artifacts..."
-        find src-tauri/target -name "*.dmg" -type f -exec ls -la {} \;
-        echo "All DMG files found:"
+        echo "Searching for build artifacts in all possible locations..."
+        echo "=== Target directory structure ==="
+        find src-tauri/target -type d | head -20
+        echo ""
+        echo "=== All DMG files ==="
         find src-tauri/target -name "*.dmg" -type f
+        echo ""
+        echo "=== All bundle directories ==="
+        find src-tauri/target -name "bundle" -type d
+        echo ""
+        echo "=== All release directories ==="
+        find src-tauri/target -name "release" -type d
+        echo ""
+        echo "=== Complete target structure (last level) ==="
+        find src-tauri/target -type d | grep release | sort
 
     - name: Upload macOS build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: macos-build
         path: |
-          src-tauri/target/*/release/bundle/dmg/*.dmg
-          src-tauri/target/*/release/bundle/macos/*.dmg
+          src-tauri/target/**/*.dmg
+          src-tauri/target/**/*.app
         retention-days: 30
         if-no-files-found: warn
