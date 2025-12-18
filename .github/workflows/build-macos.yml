@@ -63,15 +63,19 @@ jobs:
         # Use the existing npm script which should handle Tauri CLI properly
         npm run tauri build
 
-    - name: Find and upload build artifacts
+    - name: Find and prepare build artifacts
       run: |
         echo "Searching for build artifacts..."
+        find src-tauri/target -name "*.dmg" -type f -exec ls -la {} \;
+        echo "All DMG files found:"
         find src-tauri/target -name "*.dmg" -type f
 
     - name: Upload macOS build artifacts
       uses: actions/upload-artifact@v4
-      if: hashFiles('src-tauri/target/*/release/bundle/dmg/*.dmg') != ''
       with:
         name: macos-build
-        path: src-tauri/target/*/release/bundle/dmg/*.dmg
+        path: |
+          src-tauri/target/*/release/bundle/dmg/*.dmg
+          src-tauri/target/*/release/bundle/macos/*.dmg
         retention-days: 30
+        if-no-files-found: warn
