@@ -2,11 +2,7 @@
 rustflags = "-C target-feature=+avx2"
 
 [target.x86_64-apple-darwin]
-linker = "zig"
-ar = "zig"
 rustflags = ["-C", "link-arg=-mmacosx-version-min=11.7"]
 
 [target.aarch64-apple-darwin]
-linker = "zig"
-ar = "zig"
 rustflags = ["-C", "link-arg=-mmacosx-version-min=11.7"]
