@@ -63,6 +63,19 @@ jobs:
         # Use the existing npm script which should handle Tauri CLI properly
         npm run tauri build
 
+    - name: Apply ad-hoc signing to macOS binaries
+      run: |
+        echo "Applying ad-hoc signing to fix macOS gatekeeper issues..."
+        # Find and sign all executables and dylibs
+        find src-tauri/target -name "*.app" -type d | while read app; do
+          echo "Signing app: $app"
+          codesign --force --deep --sign - "$app" || true
+        done
+
+        find src-tauri/target -name "*.dmg" -type f | while read dmg; do
+          echo "DMG found: $dmg"
+        done
+
     - name: Find and prepare build artifacts
       run: |
         echo "Searching for build artifacts in all possible locations..."
