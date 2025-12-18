@@ -30,9 +30,18 @@ jobs:
         # Install any macOS-specific dependencies if needed
         brew install create-dmg
 
-    - name: Install dependencies
+    - name: Checkout postflop-solver
+      uses: actions/checkout@v4
+      with:
+        repository: utatanmax/postflop-solver
+        path: postflop-solver
+
+    - name: Install dependencies and setup postflop-solver
       run: |
-        npm install
+        npm install --audit=false
+        # Link postflop-solver to expected location
+        mkdir -p /tmp
+        ln -sf "$(pwd)/postflop-solver" /tmp/postflop-solver
         cd src-tauri
         cargo fetch
 
