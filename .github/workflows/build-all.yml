@@ -48,7 +48,7 @@ jobs:
       if: matrix.platform == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev librsvg2-dev
+        sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev librsvg2-dev
 
     - name: Checkout postflop-solver
       uses: actions/checkout@v4
@@ -57,6 +57,7 @@ jobs:
         path: postflop-solver
 
     - name: Install dependencies and setup postflop-solver
+      shell: bash
       run: |
         npm install --audit=false
         # Link postflop-solver to expected location
