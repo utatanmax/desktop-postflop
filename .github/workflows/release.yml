@@ -56,9 +56,18 @@ jobs:
         shell: bash
         run: |
           npm install --audit=false
-          # Link postflop-solver to expected location
-          mkdir -p /tmp
-          ln -sf "$(pwd)/postflop-solver" /tmp/postflop-solver
+          # Setup postflop-solver location (copy instead of symlink for Windows compatibility)
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            # Windows: copy to D:\tmp
+            mkdir -p D:/tmp
+            if [ ! -d "D:/tmp/postflop-solver" ]; then
+              cp -r postflop-solver D:/tmp/postflop-solver
+            fi
+          else
+            # Unix systems: create symlink
+            mkdir -p /tmp
+            ln -sf "$(pwd)/postflop-solver" /tmp/postflop-solver
+          fi
           cd src-tauri
           # Remove Cargo.lock to regenerate with compatible versions
           rm -f Cargo.lock
