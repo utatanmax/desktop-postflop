@@ -1,0 +1,63 @@
+name: Build macOS
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        targets: x86_64-apple-darwin, aarch64-apple-darwin
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        npm install
+        cd src-tauri
+        cargo fetch
+
+    - name: Build frontend
+      run: npm run build
+
+    - name: Build for macOS x86_64
+      run: |
+        cd src-tauri
+        cargo build --target x86_64-apple-darwin --release
+        cd ..
+        npm run tauri build -- --target x86_64-apple-darwin
+
+    - name: Build for macOS ARM64
+      run: |
+        cd src-tauri
+        cargo build --target aarch64-apple-darwin --release
+        cd ..
+        npm run tauri build -- --target aarch64-apple-darwin
+
+    - name: Upload macOS x86_64 build
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-x86_64
+        path: src-tauri/target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
+
+    - name: Upload macOS ARM64 build
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-aarch64
+        path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
