@@ -20,11 +20,9 @@ tauri = { version = "1.5.0", features = ["dialog-open", "dialog-save", "fs-read-
 postflop-solver = { path = "/tmp/postflop-solver" }
 rayon = "1.8.0"
 sysinfo = "0.29.10"
-
-# Pin problematic dependencies to avoid edition2024
-[patch.crates-io]
+# Pin to versions that don't require edition2024
 time = "=0.3.36"
-ignore = "=0.4.25"
+
 
 [features]
 # by default Tauri runs in production mode

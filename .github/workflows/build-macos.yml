@@ -46,11 +46,6 @@ jobs:
 
         # Remove Cargo.lock to regenerate with compatible versions
         rm -f Cargo.lock
-
-        # Fix specific packages that require edition2024
-        cargo update ignore --precise 0.4.25
-        cargo update globset --precise 0.4.18
-        cargo update time --precise 0.3.36
         cargo fetch
 
     - name: Rust cache
