@@ -44,9 +44,8 @@ jobs:
         ln -sf "$(pwd)/postflop-solver" /tmp/postflop-solver
         cd src-tauri
 
-        # Remove Cargo.lock to regenerate with fixed Rust version
+        # Remove Cargo.lock to regenerate with Rust 1.75.0
         rm -f Cargo.lock
-        cargo update --time 0.3.28
         cargo fetch
 
     - name: Rust cache
