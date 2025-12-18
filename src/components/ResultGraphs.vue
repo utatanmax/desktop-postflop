@@ -243,11 +243,13 @@ const chartData = computed((): ChartData<"line", Point[]> => {
 const chartOptions = computed((): ChartOptions<"line"> => {
   const content = props.displayOptions.contentGraphs;
   const styleY = content === "ev" ? "decimal" : "percent";
-  const formatX = { style: "percent", minimumFractionDigits: 0 };
-  const formatY = {
-    style: styleY,
-    useGrouping: false,
-    minimumFractionDigits: 0,
+  const formatX = (value: number) => `${Math.round(value * 100)}%`;
+  const formatY = (value: number) => {
+    if (styleY === "decimal") {
+      return toFixedAdaptive(value);
+    } else {
+      return `${toFixed1(value * 100)}%`;
+    }
   };
 
   return {
@@ -259,7 +261,11 @@ const chartOptions = computed((): ChartOptions<"line"> => {
     scales: {
       x: {
         type: "linear",
-        ticks: { format: formatX },
+        ticks: {
+          callback: function(value) {
+            return formatX(typeof value === 'number' ? value : 0);
+          }
+        },
         afterFit(axis) {
           chartWidth.value = axis.width;
         },
@@ -269,7 +275,9 @@ const chartOptions = computed((): ChartOptions<"line"> => {
         max: content === "eq" ? 1 : undefined,
         suggestedMin: content === "ev" ? 0 : undefined,
         ticks: {
-          format: formatY,
+          callback: function(value) {
+            return formatY(typeof value === 'number' ? value : 0);
+          }
         },
         afterFit(axis) {
           axis.width = 52;
@@ -306,9 +314,9 @@ const chartOptions = computed((): ChartOptions<"line"> => {
             const c2 = cardText(cardPair >>> 8);
             const label = `${c2.rank}${c2.suit}${c1.rank}${c1.suit}`;
             if (content === "ev") {
-              return ` ${label}: ${toFixedAdaptive(value)}`;
+              return ` ${label}: ${toFixedAdaptive(value || 0)}`;
             } else {
-              return ` ${label}: ${toFixed1(value * 100)}%`;
+              return ` ${label}: ${toFixed1((value || 0) * 100)}%`;
             }
           },
         },

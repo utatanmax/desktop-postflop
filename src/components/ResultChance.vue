@@ -196,7 +196,13 @@ const chartOptions = computed((): ChartOptions<"bar"> => {
   const style = ["strategy", "eq", "eqr"].includes(option)
     ? "percent"
     : "decimal";
-  const format = { style, useGrouping: false, minimumFractionDigits: 0 };
+  const format = (value: number) => {
+    if (style === "percent") {
+      return `${toFixed1(value * 100)}%`;
+    } else {
+      return toFixedAdaptive(value);
+    }
+  };
 
   const titleText =
     props.displayPlayer.toUpperCase() +
@@ -219,7 +225,11 @@ const chartOptions = computed((): ChartOptions<"bar"> => {
         stacked: true,
         min: ["ev", "eqr"].includes(option) ? undefined : 0,
         max: option === "strategy" ? 1 : undefined,
-        ticks: { format },
+        ticks: {
+          callback: function(value) {
+            return format(typeof value === 'number' ? value : 0);
+          }
+        },
         afterFit(axis) {
           axis.width = 52;
         },
@@ -248,9 +258,9 @@ const chartOptions = computed((): ChartOptions<"bar"> => {
             let label = context.dataset.label ?? "";
             if (label) label += ": ";
             if (["strategy-combos", "ev"].includes(option)) {
-              return ` ${label}${toFixedAdaptive(value)}`;
+              return ` ${label}${toFixedAdaptive(value || 0)}`;
             } else {
-              return ` ${label}${toFixed1(value * 100)}%`;
+              return ` ${label}${toFixed1((value || 0) * 100)}%`;
             }
           },
         },
