@@ -6,7 +6,7 @@ authors = ["Wataru Inariba"]
 license = "AGPL-3.0-or-later"
 repository = "https://github.com/b-inary/desktop-postflop/tree/main/src-tauri"
 edition = "2021"
-rust-version = "1.65"
+rust-version = "1.70"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
